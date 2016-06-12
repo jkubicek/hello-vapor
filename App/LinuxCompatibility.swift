@@ -17,7 +17,7 @@ extension NSUUID {
   }
   
   public convenience init?(uuidString string: String) {
-    self.init(UUIDString: String)
+    self.init(UUIDString: string)
   }
   
 #endif
