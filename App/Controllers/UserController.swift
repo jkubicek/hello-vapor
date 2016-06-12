@@ -16,10 +16,8 @@ class UserController: Controller {
   }
   
   func store(_ request: Request) throws -> ResponseRepresentable {
-    guard let name = request.data["name"]?.string else {
-      return Response(error: "Could not create user")
-    }
-    let user = User(name: name)
+    let user = User(firstName: request.data["firstName"]?.string,
+                    lastName: request.data["lastName"]?.string)
     users.append(user)
     return Response(status: .accepted)
   }
@@ -55,7 +53,7 @@ class UserController: Controller {
 extension User: Equatable {}
 
 func ==(lhs: User, rhs: User) -> Bool {
-  return lhs.name == rhs.name
+  return lhs.id == rhs.id
 }
 
 extension String: ErrorProtocol { }
