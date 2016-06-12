@@ -3,6 +3,8 @@ import VaporMustache
 
 let app = Application()
 
+var users: [User] = []
+
 /**
     Vapor configuration files are located
     in the root directory of the project

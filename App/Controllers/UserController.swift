@@ -7,17 +7,21 @@ class UserController: Controller {
     Log.info("User controller created")
   }
   
+  deinit {
+    Log.info("Deinit controller")
+  }
+  
   func index(_ request: Request) throws -> ResponseRepresentable {
-    return JSON([
-      "controller": "UserController.index"
-      ])
+    return JSON(users.map{$0})
   }
   
   func store(_ request: Request) throws -> ResponseRepresentable {
-    
-    return JSON([
-      "controller": "UserController.store"
-      ])
+    guard let name = request.data["name"]?.string else {
+      return Response(error: "Could not create user")
+    }
+    let user = User(name: name)
+    users.append(user)
+    return Response(status: .accepted)
   }
   
   /**
@@ -38,8 +42,33 @@ class UserController: Controller {
   }
   
   func destroy(_ request: Request, item user: User) throws -> ResponseRepresentable {
-    //User is ResponseRepresentable by proxy of JsonRepresentable
-    return user
+    do {
+      users = try users.removeElement(element: user)
+      return Response(status: .ok)
+    } catch {
+      return Response(status: .badRequest, text: "\(error)")
+    }
+  }
+  
+}
+
+extension User: Equatable {}
+
+func ==(lhs: User, rhs: User) -> Bool {
+  return lhs.name == rhs.name
+}
+
+extension String: ErrorProtocol { }
+
+extension Array where Element: Equatable {
+  
+  func removeElement(element: Element) throws -> Array<Element> {
+    guard let indexToRemove = index(of: element) else {
+      throw "Could not find element \(element)"
+    }
+    var array = self
+    array.remove(at: indexToRemove)
+    return array
   }
   
 }

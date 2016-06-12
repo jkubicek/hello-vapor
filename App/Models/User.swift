@@ -30,3 +30,9 @@ extension User: StringInitializable {
         self.init(name: string)
     }
 }
+
+extension User: ResponseRepresentable {
+  func makeResponse() -> Response {
+    return self.makeJson().makeResponse()
+  }
+}
